@@ -135,11 +135,43 @@ train = tf.train.AdamOptimizer(learning_rate).minimize(loss)
 > Question 5 : 
 Créer les deux fonctions suivantes afin d'alléger le code.
 ```
-    def convolution(couche_prec, taille_noyau, nbr_noyau):
+def convolution(couche_prec, taille_noyau, nbr_noyau):
 
-        return result
+    return result
 
-    def fc(couche_prec, nbr_neurone):
+def fc(couche_prec, nbr_neurone):
 
-        return result
-    ```
+    return result
+```
+
+```
+def convolution(couche_prec, taille_noyau, nbr_noyau):
+    b = tf.constant(np.zeros(nbr_noyau), dtype=tf.float32)
+    w = tf.Variable(tf.random.truncated_normal(shape=(taille_noyau, taille_noyau, int(couche_prec.get_shape()[-1]), nbr_noyau)))
+    return tf.nn.relu(tf.nn.conv2d(couche_prec, w, strides=[1, 1, 1, 1], padding='SAME') + b)
+
+def fc(couche_prec, nbr_neurone):
+    bFC = tf.constant(np.zeros(shape=(nbr_neurone)), dtype=tf.float32)
+    wFC = tf.Variable(tf.truncated_normal(shape=(couche_prec.get_shape()[-1], nbr_neurone)), dtype=tf.float32)
+    return tf.nn.sigmoid(tf.matmul(couche_prec, wFC) + bFC)
+```
+
+Le code qui permet de définir le réseau de neurones est le suivant :
+
+```
+taille_noyau = 5
+
+couche_0 = convolution(ph_images, taille_noyau, 16)
+couche_1 = convolution(couche_0, taille_noyau, 16)
+couche_1 = tf.nn.max_pool(couche_1, ksize = [1, 2, 2, 1], strides=[1, 2, 2, 1], padding='SAME')
+
+couche_2 = convolution(couche_1, taille_noyau, 32)
+couche_3 = convolution(couche_2, taille_noyau, 32)
+couche_3 = tf.nn.max_pool(couche_3, ksize = [1, 2, 2, 1], strides=[1, 2, 2, 1], padding='SAME')
+
+flattened = tf.contrib.layers.flatten(couche_3)
+
+FC1 = fc(flattened, 512)
+FC2 = fc(FC1, 10)
+scso = tf.nn.softmax(FC2)
+```
