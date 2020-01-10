@@ -10,7 +10,7 @@
 
 > Question 2 : Modifier le code afin de produire un modèle de regression linéaire sur des données 2D et 3D.
 
->> Le modèle actuel est un modèle 2D, ```theta``` est une variable qui possède 2 composantes. On peut faire un modèle sur des données de dimension supérieure, jusqu'à la dimension 5 (car chaque fleur du dataset Iris possède 4 attributs et une classe). Pour cela, on doit changer la dimension de ```X``` et ```theta```. Dans le code suivant, on fait la régression 5D. Le coefficient utilisé dans le calcul du gradient doit aussi être modifié. On constate une meilleure convergence si le coefficient choisi est égal à la dimension considérée.
+>> Le modèle actuel est un modèle 2D, en effet, ```theta``` est possède 2 composantes. On peut faire un modèle sur des données de dimension supérieure, jusqu'à la dimension 5 (car chaque fleur du dataset Iris possède 4 attributs et une classe, soit au plus 4 dimensions pour les attributs et une dimension supplémentaire pour la classe). Pour cela, on doit changer la dimension de ```X``` et ```theta```. Dans le code suivant, on fait la régression 5D. Le coefficient utilisé dans le calcul du gradient doit aussi être modifié. On constate une meilleure convergence si le coefficient choisi est égal à la dimension considérée.
 
 ```
 from sklearn import datasets
@@ -56,7 +56,6 @@ training_op = tf.assign(theta, theta - learning_rate * gradients)
 init = tf.global_variables_initializer() # créer un noeud init dans le graphe qui correspond à l'initialisation
 
 # Execution du modèle
-
 with tf.Session() as sess:
     # On Execute le noeud d'initialisation des variables
     sess.run(init) 
