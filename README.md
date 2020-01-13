@@ -101,7 +101,7 @@ couche_3 = tf.nn.max_pool(tf.nn.relu(tf.nn.conv2d(couche_2, w3, strides=[1, 1, 1
                           ksize = [1, 2, 2, 1], strides=[1, 2, 2, 1], padding='SAME')
 ```
 
-> Question 4 : que peut on dire des variables $b$ et des pondérations $w$ ?
+> Question : que peut on dire des variables $b$ et des pondérations $w$ ?
 
 >> Les variables $b$ sont les biais (dans le cadre de ce TP on les a fixé à 0). Les pondérations $w$ sont des vecteurs qui sont des paramètres du réseau. Chaque neurone est le résultat d'une opération (produit tensoriel par $w$ ou multiplication par $w$ - selon la dimension de la variable d'entrée du neurone - puis somme avec $b$). L'algorithme consiste à choisir les meilleurs valeurs de $w$ de manière 
 
@@ -269,6 +269,10 @@ with tf.Session() as s:
         cv2_imshow(mnist_test_images[image]*255)
 ```
 
-Le graphe suivant représente l'évolution de l'erreur sur les ensembles d'entraînenement et de test en fonction du nombre d'itérations.
+Le graphe suivant représente l'évolution de l'erreur sur les ensembles d'entraînenement et de test en fonction du nombre d'itérations avec la méthode *AdamOptimizer*. Avec cette méthode d'entraînement, l'erreur oscille autour de 50%. On remarque que l'augmentation du nombre d'itérations ne permet pas une convergence vers un modèle avec une erreur plus faible.
 
-![Evolution erreur premier réseau](images/Entrainement_CNN_sans_normalisation.png?raw=true "Evolution de l'erreur pour les ensemble d'entraînement et de test")
+![Evolution erreur premier réseau](images/CNN_AdamOptimizer_sans_optimisation.png?raw=true "Evolution de l'erreur pour les ensemble d'entraînement et de test")
+
+Le graphe suivant représente l'évolution de l'erreur sur les ensembles d'entraînenement et de test en fonction du nombre d'itérations avec la méthode *GradientDescentOptimizer*. Avec cette méthode d'entraînement, l'algorithme converge vers une erreur autour de 40% pour les ensembles d'entraînement et de test.
+
+![Evolution erreur premier réseau](images/CNN_GradientDescentOptimizer_sans_optimisation.png?raw=true "Evolution de l'erreur pour les ensemble d'entraînement et de test")
