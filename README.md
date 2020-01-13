@@ -71,6 +71,7 @@ print("Best theta : ", best_theta)
 
 ### Convolutional Neural Network for handwritten digits recognition
 
+#### Etude de la structure du code
 > Question 3 : Bien analyser la structuration du script qui est assez standard et que vous retrouverez dans la suite des expérimentations. Attacher une importance particulière à la structuration des tableaux de données qui servent à l'apprentissage.
 
 >> Le code a la même structure que le code du MLP. On commence par définir le réseau et les fonctions nécessaires à la phase d'apprentissage (fonction de Loss ```loss```, d'entraînement ```train``` - ici la méthode du gradient, précision ```accuracy```). On entraîne ensuite le modèle avec un nombre fixé d'itérations. A chaque itération, on entraîne le modèle sur tous les batchs grâce à la commande ```train```, puis on fait la prédiction du modèle sur les batchs d'entraînement et de test. Ensuite, on affiche l'erreur sur les batchs d'entraînement et de test en fonction du numéro de l'itération. On affiche enfin pour chacune des images de test la valeur retournée par le modèle et la valeur attendue.
@@ -105,7 +106,7 @@ couche_3 = tf.nn.max_pool(tf.nn.relu(tf.nn.conv2d(couche_2, w3, strides=[1, 1, 1
 
 >> Les variables $b$ sont les biais (dans le cadre de ce TP on les a fixé à 0). Les pondérations $w$ sont des vecteurs qui sont des paramètres du réseau. Chaque neurone est le résultat d'une opération (produit tensoriel par $w$ ou multiplication par $w$ - selon la dimension de la variable d'entrée du neurone - puis somme avec $b$). L'algorithme consiste à choisir les meilleurs valeurs de $w$ de manière 
 
-Code de mise en place de l'applatissement de la dernière couche de convolution et création de deux couches *fully-connected* : 
+#### Code de mise en place de l'applatissement de la dernière couche de convolution et création de deux couches *fully-connected* : 
 
 ```
 sortie_CNN = tf.contrib.layers.flatten(couche_3)
@@ -124,7 +125,7 @@ FC2 = tf.nn.sigmoid(tf.matmul(FC1, wFC2) + bFC2)
 scso = tf.nn.softmax(FC2)
 ```
 
-Code de définition de la fonction de Loss et des métriques de précision :
+#### Code de définition de la fonction de Loss et des métriques de précision :
 
 ```
 loss = tf.nn.softmax_cross_entropy_with_logits_v2(labels=ph_labels, logits=FC2)
@@ -202,6 +203,32 @@ import numpy as np
 import matplotlib.pyplot as plot
 from google.colab.patches import cv2_imshow
 
+# Functions
+def convolution(couche_prec, taille_noyau, nbr_noyau):
+    b = tf.constant(np.zeros(nbr_noyau), dtype=tf.float32)
+    w = tf.Variable(tf.random.truncated_normal(shape=(taille_noyau, taille_noyau, int(couche_prec.get_shape()[-1]), nbr_noyau)))
+    return tf.nn.relu(tf.nn.conv2d(couche_prec, w, strides=[1, 1, 1, 1], padding='SAME') + b)
+
+def fc(couche_prec, nbr_neurone):
+    bFC = tf.constant(np.zeros(shape=(nbr_neurone)), dtype=tf.float32)
+    wFC = tf.Variable(tf.truncated_normal(shape=(couche_prec.get_shape()[-1], nbr_neurone)), dtype=tf.float32)
+    return tf.nn.sigmoid(tf.matmul(couche_prec, wFC) + bFC)
+
+def trainNetwork(taille_batch, train, mnist_train_images, mnist_train_labels):
+    for batch in np.arange(0, len(mnist_train_images), taille_batch):
+        s.run(train, feed_dict={
+            ph_images: mnist_train_images[batch:batch+taille_batch],
+            ph_labels: mnist_train_labels[batch:batch+taille_batch]
+            })
+
+def computeAccuracy(taille_batch, accuracy, images, labels):
+    return np.mean(
+            [s.run(accuracy, feed_dict={
+                ph_images: images[batch:batch+taille_batch],
+                ph_labels: labels[batch:batch+taille_batch]})
+            for batch in range(0, len(images), taille_batch) ]
+            )
+
 # Data
 mnist_train_images=np.fromfile("drive/My Drive/dataset/mnist/train-images.idx3-ubyte", dtype=np.uint8)[16:].reshape(-1, 28, 28, 1)/255
 mnist_train_labels=np.eye(10)[np.fromfile("drive/My Drive/dataset/mnist/train-labels.idx1-ubyte", dtype=np.uint8)[8:]]
@@ -269,10 +296,31 @@ with tf.Session() as s:
         cv2_imshow(mnist_test_images[image]*255)
 ```
 
-Le graphe suivant représente l'évolution de l'erreur sur les ensembles d'entraînenement et de test en fonction du nombre d'itérations avec la méthode *AdamOptimizer*. Avec cette méthode d'entraînement, l'erreur oscille autour de 50%. On remarque que l'augmentation du nombre d'itérations ne permet pas une convergence vers un modèle avec une erreur plus faible.
+Le graphe suivant représente l'évolution de l'erreur sur les ensembles d'entraînement et de test en fonction du nombre d'itérations avec la méthode *AdamOptimizer*. Avec cette méthode d'entraînement, l'erreur oscille autour de 50%. On remarque que l'augmentation du nombre d'itérations ne permet pas une convergence vers un modèle avec une erreur plus faible.
 
 ![Evolution erreur premier réseau avec Adam](images/CNN_AdamOptimizer_sans_optimisation.png?raw=true "Evolution de l'erreur pour les ensemble d'entraînement et de test")
 
-Le graphe suivant représente l'évolution de l'erreur sur les ensembles d'entraînenement et de test en fonction du nombre d'itérations avec la méthode *GradientDescentOptimizer*. Avec cette méthode d'entraînement, l'algorithme converge vers une erreur autour de 40% pour les ensembles d'entraînement et de test.
+Le graphe suivant représente l'évolution de l'erreur sur les ensembles d'entraînement et de test en fonction du nombre d'itérations avec la méthode *GradientDescentOptimizer*. Avec cette méthode d'entraînement, l'algorithme converge vers une erreur autour de 40% pour les ensembles d'entraînement et de test.
 
 ![Evolution erreur premier réseau avec la méthode du gradient](images/CNN_GradientDescentOptimizer_sans_optimisation.png?raw=true "Evolution de l'erreur pour les ensemble d'entraînement et de test")
+
+#### Introduction d'une normalisation pour les couches du Réseau de Neurones Convolutionnel
+
+On introduit une fonction de normalisation pour les couches du réseau :
+
+```
+def normalisation(couche_prec):
+    mean, var= tf.nn.moments(couche_prec, [0])
+    scale = tf.Variable(tf.ones(shape=(np.shape(couche_prec)[-1])))
+    beta = tf.Variable(tf.zeros(shape=(np.shape(couche_prec)[-1])))
+    result = tf.nn.batch_normalization(couche_prec, mean, var, beta, scale, 0.001)
+    return result
+```
+
+On applique cette normalisation en sortie de chacune des couches du réseau de neurone convolutionnel.
+
+Le graphe suivant représente l'évolution de l'erreur sur les ensembles d'entraînement et de test en fonction du nombre d'itérations avec la méthode *AdamOptimizer*. Après moins de 10 itérations, l'erreur descend sous les 3%. Après 60 itérations, l'erreur sur l'ensemble d'entraînement est inférieure à 1.5% et l'erreur sur l'ensemble de test est d'environ 3%. Ceci garantit qu'il n'y a pas d'overfitting. 
+
+![Evolution erreur deuxième réseau avec Adam](images/CNN_AdamOptimizer_sans_optimisation.png?raw=true "Evolution de l'erreur pour les ensemble d'entraînement et de test")
+
+Le graphe suivant représente l'évolution de l'erreur sur les ensembles d'entraînement et de test en fonction du nombre d'itérations avec la méthode *GradientDescentOptimizer*. La convergence du modèle est plus lente dans ce cas, et l'erreur finale est de l'ordre de 4% pour l'ensemble d'entraînement.
