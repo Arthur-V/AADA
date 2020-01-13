@@ -321,6 +321,8 @@ On applique cette normalisation en sortie de chacune des couches du réseau de n
 
 Le graphe suivant représente l'évolution de l'erreur sur les ensembles d'entraînement et de test en fonction du nombre d'itérations avec la méthode *AdamOptimizer*. Après moins de 10 itérations, l'erreur descend sous les 3%. Après 60 itérations, l'erreur sur l'ensemble d'entraînement est inférieure à 1.5% et l'erreur sur l'ensemble de test est d'environ 3%. Ceci garantit qu'il n'y a pas d'overfitting. 
 
-![Evolution erreur deuxième réseau avec Adam](images/CNN_AdamOptimizer_sans_optimisation.png?raw=true "Evolution de l'erreur pour les ensemble d'entraînement et de test")
+![Evolution erreur deuxième réseau avec Adam](images/CNN_AdamOptimizer_avec_optimisation.png?raw=true "Evolution de l'erreur pour les ensemble d'entraînement et de test")
 
 Le graphe suivant représente l'évolution de l'erreur sur les ensembles d'entraînement et de test en fonction du nombre d'itérations avec la méthode *GradientDescentOptimizer*. La convergence du modèle est plus lente dans ce cas, et l'erreur finale est de l'ordre de 4% pour l'ensemble d'entraînement.
+
+![Evolution erreur premier réseau avec la méthode du gradient](images/CNN_GradientDescentOptimizer_avec_optimisation.png?raw=true "Evolution de l'erreur pour les ensemble d'entraînement et de test")
