@@ -271,8 +271,8 @@ with tf.Session() as s:
 
 Le graphe suivant représente l'évolution de l'erreur sur les ensembles d'entraînenement et de test en fonction du nombre d'itérations avec la méthode *AdamOptimizer*. Avec cette méthode d'entraînement, l'erreur oscille autour de 50%. On remarque que l'augmentation du nombre d'itérations ne permet pas une convergence vers un modèle avec une erreur plus faible.
 
-![Evolution erreur premier réseau](images/CNN_AdamOptimizer_sans_optimisation.png?raw=true "Evolution de l'erreur pour les ensemble d'entraînement et de test")
+![Evolution erreur premier réseau avec Adam](images/CNN_AdamOptimizer_sans_optimisation.png?raw=true "Evolution de l'erreur pour les ensemble d'entraînement et de test")
 
 Le graphe suivant représente l'évolution de l'erreur sur les ensembles d'entraînenement et de test en fonction du nombre d'itérations avec la méthode *GradientDescentOptimizer*. Avec cette méthode d'entraînement, l'algorithme converge vers une erreur autour de 40% pour les ensembles d'entraînement et de test.
 
-![Evolution erreur premier réseau](images/CNN_GradientDescentOptimizer_sans_optimisation.png?raw=true "Evolution de l'erreur pour les ensemble d'entraînement et de test")
+![Evolution erreur premier réseau avec la méthode du gradient](images/CNN_GradientDescentOptimizer_sans_optimisation.png?raw=true "Evolution de l'erreur pour les ensemble d'entraînement et de test")
