@@ -175,3 +175,96 @@ FC1 = fc(flattened, 512)
 FC2 = fc(FC1, 10)
 scso = tf.nn.softmax(FC2)
 ```
+
+On définit également deux fonctions qui permettent de simplifier la boucle principale :
+
+```
+def trainNetwork(taille_batch, train, mnist_train_images, mnist_train_labels):
+    for batch in np.arange(0, len(mnist_train_images), taille_batch):
+        s.run(train, feed_dict={
+            ph_images: mnist_train_images[batch:batch+taille_batch],
+            ph_labels: mnist_train_labels[batch:batch+taille_batch]
+            })
+
+def computeAccuracy(taille_batch, accuracy, images, labels):
+    return np.mean(
+            [s.run(accuracy, feed_dict={
+                ph_images: images[batch:batch+taille_batch],
+                ph_labels: labels[batch:batch+taille_batch]})
+            for batch in range(0, len(images), taille_batch) ]
+            )
+```
+
+Le code est le suivant :
+```
+import tensorflow as tf
+import numpy as np
+import matplotlib.pyplot as plot
+from google.colab.patches import cv2_imshow
+
+# Data
+mnist_train_images=np.fromfile("drive/My Drive/dataset/mnist/train-images.idx3-ubyte", dtype=np.uint8)[16:].reshape(-1, 28, 28, 1)/255
+mnist_train_labels=np.eye(10)[np.fromfile("drive/My Drive/dataset/mnist/train-labels.idx1-ubyte", dtype=np.uint8)[8:]]
+mnist_test_images=np.fromfile("drive/My Drive/dataset/mnist/t10k-images.idx3-ubyte", dtype=np.uint8)[16:].reshape(-1, 28, 28, 1)/255
+mnist_test_labels=np.eye(10)[np.fromfile("drive/My Drive/dataset/mnist/t10k-labels.idx1-ubyte", dtype=np.uint8)[8:]]
+
+# Parameters
+taille_batch=100
+nbr_entrainement=15
+learning_rate=0.001
+taille_noyau = 5
+
+# Network definition
+ph_images=tf.placeholder(shape=(None, 28, 28, 1), dtype=tf.float32)
+ph_labels=tf.placeholder(shape=(None, 10), dtype=tf.float32)
+couche_0 = convolution(ph_images, taille_noyau, 16)
+couche_1 = convolution(couche_0, taille_noyau, 16)
+couche_1 = tf.nn.max_pool(couche_1, ksize = [1, 2, 2, 1], strides=[1, 2, 2, 1], padding='SAME')
+couche_2 = convolution(couche_1, taille_noyau, 32)
+couche_3 = convolution(couche_2, taille_noyau, 32)
+couche_3 = tf.nn.max_pool(couche_3, ksize = [1, 2, 2, 1], strides=[1, 2, 2, 1], padding='SAME')
+flattened = tf.contrib.layers.flatten(couche_3)
+FC1 = fc(flattened, 512)
+FC2 = fc(FC1, 10)
+scso = tf.nn.softmax(FC2)
+
+# Metrics definition
+loss = tf.nn.softmax_cross_entropy_with_logits_v2(labels=ph_labels, logits=FC2)
+accuracy = tf.reduce_mean(tf.cast(tf.equal(tf.argmax(FC2, 1), tf.argmax(ph_labels, 1)), tf.float32))
+train = tf.train.AdamOptimizer(learning_rate).minimize(loss)
+
+with tf.Session() as s:
+    s.run(tf.global_variables_initializer())
+    
+    tab_train=[]
+    tab_test=[]
+    
+    for id_entrainement in np.arange(nbr_entrainement):
+        print("> Entrainement", id_entrainement)
+
+        trainNetwork(taille_batch, train, mnist_train_images, mnist_train_labels)
+        accuracy_train = computeAccuracy(taille_batch, accuracy,
+                                         mnist_train_images, mnist_train_labels)
+        accuracy_test = computeAccuracy(taille_batch, accuracy,
+                                        mnist_test_images, mnist_test_labels)
+
+        print("  train:", accuracy_train, "\n  test :", accuracy_test)
+        tab_train.append(1 - accuracy_train)
+        tab_test.append(1 - accuracy_test)
+
+    plot.ylim(0, 1)
+    plot.grid()
+    plot.plot(tab_train, label="Train error")
+    plot.plot(tab_test, label="Test error")
+    plot.legend(loc="upper right")
+    plot.show()
+    
+    resulat=s.run(scso, feed_dict={ph_images: mnist_test_images[0:taille_batch]})
+    np.set_printoptions(formatter={'float': '{:0.3f}'.format})
+
+    for image in range(taille_batch):
+        print("image", image)
+        print("sortie du réseau:", resulat[image], np.argmax(resulat[image]))
+        print("sortie attendue :", mnist_test_labels[image], np.argmax(mnist_test_labels[image]))
+        cv2_imshow(mnist_test_images[image]*255)
+```
