@@ -270,3 +270,5 @@ with tf.Session() as s:
 ```
 
 Le graphe suivant représente l'évolution de l'erreur sur les ensembles d'entraînenement et de test en fonction du nombre d'itérations.
+
+![Evolution erreur premier réseau](images/Entrainement CNN sans normalisation?raw=true "Evolution de l'erreur pour les ensemble d'entraînement et de test")
