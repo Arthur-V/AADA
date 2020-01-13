@@ -268,3 +268,5 @@ with tf.Session() as s:
         print("sortie attendue :", mnist_test_labels[image], np.argmax(mnist_test_labels[image]))
         cv2_imshow(mnist_test_images[image]*255)
 ```
+
+Le graphe suivant représente l'évolution de l'erreur sur les ensembles d'entraînenement et de test en fonction du nombre d'itérations.
