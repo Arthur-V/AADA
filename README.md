@@ -391,8 +391,16 @@ Le code initial utilisait les canaux 7 et 9, correspondant à la route et à la 
 
 La base de données est composée de 2000 images RGB, associées chacune à une image segmentée comprenant des valeurs de 0 à 12 et correspondant au label de chaque pixel.
 
+Trois réseaux différents ont été entraînés. Dans tous les cas, on a observé une convergence rapide et après la 100^{ème} itération, l'erreur sur l'ensemble d'entraînement était d'environ 1,1% et l'erreur sur l'ensemble de test environ 1.4%.
+
 Le réseau a été initialement entraîné avec 500 images et pour les labels *Route* et *Végétation*.
 
-Un deuxième réseau a été entraîné avec les mêmes labels mais sur l'ensemble du dataset, soit 2000 images.
+![Performances réseau 1](images/performance_reseau_1.png?raw=true "Performances réseau 1")
+
+Un deuxième réseau a été entraîné avec les mêmes labels mais sur le dataset complet, soit 2000 images.
+
+![Performances réseau 2](images/performance_reseau_2.png?raw=true "Performances réseau 2")
 
 Le réseau a enfin été entraîné avec tous les labels et sur le dataset complet.
+
+![Performances réseau 3](images/performance_reseau_3.png?raw=true "Performances réseau 3")
