@@ -383,3 +383,16 @@ Le code a été restructuré de la manière suivante :
 - déclaration de fonctions utiles et des fonctions principales
 - exécution des fonctions principales liées à l'entraînement (Data Conditioning, définition du réseau et des métriques, entraînement et sauvegarde du réseau, affichage des performances du réseau)
 - utilisation d'un réseau déjà entraîné sauvegardé en mémoire sur des images réelles issues de Google Images
+
+Le paramètre ```labels``` est une liste d'entiers compris entre 0 et 12 inclus qui désignent les canaux utilisés pour l'apprentissage.
+Le code initial utilisait les canaux 7 et 9, correspondant à la route et à la végétation.
+
+![Liste des labels lyft udacity challenge](images/label_lyft-udacity-challenge.png?raw=true "Liste des labels du challenge Lyft Udacity")
+
+La base de données est composée de 2000 images RGB, associées chacune à une image segmentée comprenant des valeurs de 0 à 12 et correspondant au label de chaque pixel.
+
+Le réseau a été initialement entraîné avec 500 images et pour les labels *Route* et *Végétation*.
+
+Un deuxième réseau a été entraîné avec les mêmes labels mais sur l'ensemble du dataset, soit 2000 images.
+
+Le réseau a enfin été entraîné avec tous les labels et sur le dataset complet.
