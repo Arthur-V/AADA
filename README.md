@@ -373,3 +373,13 @@ with tf.Session() as s:
     print("Resultat : ", resultat[0])
     print("Valeur détectée : ", np.argmax(resultat[0]))
 ```
+
+## Projet : adaptation du Réseau de Neurones Convolutif U-net, segmentation d'image
+
+Les parties manquantes du code proposé ont été complétées.
+Le code a été restructuré de la manière suivante :
+- importations des modules et ```mount```
+- déclaration des paramètres du modèle
+- déclaration de fonctions utiles et des fonctions principales
+- exécution des fonctions principales liées à l'entraînement (Data Conditioning, définition du réseau et des métriques, entraînement et sauvegarde du réseau, affichage des performances du réseau)
+- utilisation d'un réseau déjà entraîné sauvegardé en mémoire sur des images réelles issues de Google Images
