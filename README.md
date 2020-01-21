@@ -104,7 +104,7 @@ couche_3 = tf.nn.max_pool(tf.nn.relu(tf.nn.conv2d(couche_2, w3, strides=[1, 1, 1
 
 > Question : que peut on dire des variables ```b``` et des pondérations ```w``` ?
 
->> Les variables ```b``` sont les biais (dans le cadre de ce TP on les a fixé à 0). Les pondérations ```w``` sont des vecteurs qui sont des paramètres du réseau. Chaque neurone est le résultat d'une opération (produit tensoriel par ```w``` ou multiplication par ```w``` - selon la dimension de la variable d'entrée du neurone - puis somme avec ```b```). L'algorithme consiste à choisir les meilleurs valeurs de ```w``` de manière 
+>> Les variables ```b``` sont les biais (dans le cadre de ce TP on les a fixé à 0). Les pondérations ```w``` sont des vecteurs qui sont des paramètres du réseau. Chaque neurone est le résultat d'une opération (produit tensoriel par ```w``` ou multiplication par ```w``` - selon la dimension de la variable d'entrée du neurone - puis somme avec ```b```). L'algorithme consiste à choisir les valeurs ```w``` de manière itérative afin de minimiser l'erreur.
 
 #### Code de mise en place de l'applatissement de la dernière couche de convolution et création de deux couches *fully-connected* : 
 
