@@ -102,9 +102,9 @@ couche_3 = tf.nn.max_pool(tf.nn.relu(tf.nn.conv2d(couche_2, w3, strides=[1, 1, 1
                           ksize = [1, 2, 2, 1], strides=[1, 2, 2, 1], padding='SAME')
 ```
 
-> Question : que peut on dire des variables $b$ et des pondérations $w$ ?
+> Question : que peut on dire des variables ```b``` et des pondérations ```w``` ?
 
->> Les variables $b$ sont les biais (dans le cadre de ce TP on les a fixé à 0). Les pondérations $w$ sont des vecteurs qui sont des paramètres du réseau. Chaque neurone est le résultat d'une opération (produit tensoriel par $w$ ou multiplication par $w$ - selon la dimension de la variable d'entrée du neurone - puis somme avec $b$). L'algorithme consiste à choisir les meilleurs valeurs de $w$ de manière 
+>> Les variables ```b``` sont les biais (dans le cadre de ce TP on les a fixé à 0). Les pondérations ```w``` sont des vecteurs qui sont des paramètres du réseau. Chaque neurone est le résultat d'une opération (produit tensoriel par ```w``` ou multiplication par ```w``` - selon la dimension de la variable d'entrée du neurone - puis somme avec ```b```). L'algorithme consiste à choisir les meilleurs valeurs de ```w``` de manière 
 
 #### Code de mise en place de l'applatissement de la dernière couche de convolution et création de deux couches *fully-connected* : 
 
@@ -326,3 +326,50 @@ Le graphe suivant représente l'évolution de l'erreur sur les ensembles d'entra
 Le graphe suivant représente l'évolution de l'erreur sur les ensembles d'entraînement et de test en fonction du nombre d'itérations avec la méthode *GradientDescentOptimizer*. La convergence du modèle est plus lente dans ce cas, et l'erreur finale est de l'ordre de 4% pour l'ensemble d'entraînement.
 
 ![Evolution erreur premier réseau avec la méthode du gradient](images/CNN_GradientDescentOptimizer_avec_optimisation.png?raw=true "Evolution de l'erreur pour les ensemble d'entraînement et de test")
+
+Le code suivant permet d'importer un réseau déjà entraîné. Il est utilisé sur une image et affiche la valeur détectée.
+
+```
+import tensorflow as tf
+import numpy as np
+import matplotlib.pyplot as plot
+import cv2
+import sys
+from google.colab.patches import cv2_imshow
+
+from google.colab import drive
+drive.mount('/content/drive', force_remount=True)
+
+taille_batch=100
+nbr_entrainement=15
+learning_rate=0.001
+momentum=0.99
+
+mnist_train_images=np.fromfile("/content/drive/My Drive/dataset/mnist/train-images.idx3-ubyte", dtype=np.uint8)[16:].reshape(-1, 28, 28, 1)/255
+mnist_train_labels=np.eye(10)[np.fromfile("/content/drive/My Drive/dataset/mnist/train-labels.idx1-ubyte", dtype=np.uint8)[8:]]
+mnist_test_images=np.fromfile("/content/drive/My Drive/dataset/mnist/t10k-images.idx3-ubyte", dtype=np.uint8)[16:].reshape(-1, 28, 28, 1)/255
+mnist_test_labels=np.eye(10)[np.fromfile("/content/drive/My Drive/dataset/mnist/t10k-labels.idx1-ubyte", dtype=np.uint8)[8:]]    
+
+image_test = cv2.imread("image_2.jpg")
+test = cv2.cvtColor(image_test, cv2.COLOR_BGR2GRAY)
+test = cv2.resize(test, (28, 28))
+
+with tf.Session() as s:
+    saver=tf.train.import_meta_graph('model_mnist.meta')
+    saver.restore(s, tf.train.latest_checkpoint('.'))
+    graph=tf.get_default_graph()
+    images=graph.get_tensor_by_name("images:0")
+    sortie=graph.get_tensor_by_name("sortie:0")
+    is_training=graph.get_tensor_by_name("is_training:0")
+
+    # filtrage binaire de l'image selon un seuil
+    for x in range(28):
+        for y in range(28):
+            test[y][x] = 1 if (test[y][x] < 110) else 0
+
+    resultat = s.run(sortie, feed_dict={images: [test.reshape(28, 28, 1)], is_training:False})
+    np.set_printoptions(formatter={'float': '{:0.3f}'.format})
+
+    print("Resultat : ", resultat[0])
+    print("Valeur détectée : ", np.argmax(resultat[0]))
+```
