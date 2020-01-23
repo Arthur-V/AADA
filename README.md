@@ -406,9 +406,9 @@ Le réseau a enfin été entraîné avec tous les labels et sur le dataset compl
 ![Performances réseau 3](images/performance_reseau_3.png?raw=true "Performances réseau 3")
 
 Les réseaux ont été utilisés sur un ensemble d'images réelles de test (dans le dossier ```images_test```). Malgré un excellent taux de précision sur les images d'entraînement, le résultat n'est pas convainquant.
-Par exemple, on présente l'image ```image_2``` de l'ensemble de test :
+Par exemple, on présente l'image ```image_2``` de l'ensemble de test
 
-![Image test 2](images_test/images_2.jpg?raw=true "Image test 2")
+![Image test 2](images_test/image_2.jpg?raw=true "Image test 2")
 
 et la labellisation associée :
 
