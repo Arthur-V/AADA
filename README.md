@@ -410,6 +410,8 @@ Par exemple, on présente l'image ```image_2``` de l'ensemble de test
 
 ![Image test 2](images_test/image_2.jpg?raw=true "Image test 2")
 
-et la labellisation associée :
+et la labellisation associée (on affiche les pixels dont la probabilité est supérieure à un seuil de 0.6):
 
 ![Capture résultat image test 2](images/capture_resultat_image_test.PNG?raw=true "Capture résultat image test 2")
+
+On aurait pu s'attendre à ce que les pixels associés au même label forment des composantes connexes étendues, or on remarque parfois des pixels isolés. L'application successive des opérateurs morphologique d'érosion et de dilatation, afin d'éliminer les pixels isolés, n'a pourtant pas permis d'améliorer le rendu.
